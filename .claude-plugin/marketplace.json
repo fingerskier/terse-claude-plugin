@@ -1,0 +1,17 @@
+{
+  "name": "fingerskier-terse",
+  "owner": {
+    "name": "Fingerskier",
+    "email": "matt@turingautomations.com"
+  },
+  "plugins": [
+    {
+      "name": "terse",
+      "source": "./",
+      "description": "Ultra-compressed communication mode. Cuts 50-70% of output tokens by eliminating filler, compressing prose to fragments, and reducing explanatory code to minimal form.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": ["tokens", "compression", "brevity", "efficiency", "terse"]
+    }
+  ]
+}

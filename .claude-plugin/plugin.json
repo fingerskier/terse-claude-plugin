@@ -1,0 +1,5 @@
+{
+  "name": "terse",
+  "description": "Ultra-compressed communication mode. Cuts 50-70% of output tokens by eliminating filler, compressing prose to fragments, and reducing explanatory code to minimal form — while preserving full technical accuracy and all deliverable code.",
+  "version": "1.0.0"
+}
