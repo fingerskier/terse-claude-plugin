@@ -1,0 +1,44 @@
+{
+  "pure_explanation": [
+    "Explain how JavaScript's event loop works, including the call stack, task queue, microtask queue, and how setTimeout, Promises, and async/await interact with each. Include a code example that demonstrates the execution order.",
+    "What is the difference between authentication and authorization? Explain common patterns for each in web applications.",
+    "Explain the CAP theorem and how it applies to choosing between databases like PostgreSQL, MongoDB, and Cassandra.",
+    "What are closures in JavaScript and why do they matter? When would you use one intentionally?"
+  ],
+  "mixed_code_and_explanation": [
+    "How do I set up a basic Express.js server with middleware for logging, error handling, and CORS?",
+    "Show me how to implement a debounce function in TypeScript and explain when to use it vs throttle.",
+    "How do I use React's useReducer hook? When should I pick it over useState?",
+    "Explain how to write a recursive function that flattens a deeply nested array, and show the iterative alternative."
+  ],
+  "deliverable_code": [
+    "Write a production-ready Express middleware that validates JWT tokens, handles expiration, and returns proper HTTP error codes.",
+    "Write a React component that implements an accessible autocomplete/combobox input with keyboard navigation, ARIA attributes, and debounced API calls.",
+    "Write a Python function that reads a CSV file, validates each row against a schema, collects errors, and returns both valid rows and an error report."
+  ],
+  "error_and_technical_term_preservation": [
+    "I'm getting this error: `TypeError: Cannot read properties of undefined (reading 'map')`. My code is `const items = data.results.map(r => r.name)`. What's wrong?",
+    "What does `ECONNREFUSED 127.0.0.1:5432` mean and how do I fix it?",
+    "Explain the difference between `==` and `===` in JavaScript, including type coercion rules."
+  ],
+  "short_direct_questions": [
+    "What's the difference between `let`, `const`, and `var`?",
+    "How do I center a div?",
+    "What does `git rebase` do?",
+    "Best way to deep clone an object in JS?"
+  ],
+  "multi_step_tutorial": [
+    "Walk me through setting up a new Next.js project with TypeScript, Tailwind CSS, and ESLint from scratch.",
+    "How do I deploy a Node.js app to AWS Lambda with API Gateway? Step by step.",
+    "Guide me through creating a GitHub Actions CI pipeline that runs tests, lints, and deploys to Vercel on merge to main."
+  ],
+  "pleasantry_traps": [
+    "I'm new to Docker. Could you kindly explain what containers are and why I might want to use them?",
+    "I'd really appreciate it if you could help me understand how CSS Grid works. I've been struggling with it.",
+    "Sorry to bother you, but can you explain what a REST API is?"
+  ],
+  "boundary_cases_should_not_compress": [
+    "Write a git commit message for: refactored the user service to use dependency injection instead of direct database imports",
+    "Write a PR description for adding rate limiting middleware to the API gateway"
+  ]
+}

@@ -1,0 +1,296 @@
+Terse Plugin Comparison
+=======================
+
+── pure explanation ────────────────────────
+
+Prompt 1/26: "Explain how JavaScript's event loop works, including the ..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │       0 │       1 │       2 │
+│ Terse     │     208 │    1519 │      52 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │ -Infinity%  │ -151800.0%  │ -2500.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 2/26: "What is the difference between authentication and authori..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     241 │    1713 │      34 │
+│ Terse     │     213 │    1601 │      27 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  11.6%  │   6.5%  │  20.6%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 3/26: "Explain the CAP theorem and how it applies to choosing be..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     406 │    2692 │      36 │
+│ Terse     │     215 │    1522 │      30 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  47.0%  │  43.5%  │  16.7%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 4/26: "What are closures in JavaScript and why do they matter? W..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     265 │    1734 │      58 │
+│ Terse     │     112 │     716 │      23 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  57.7%  │  58.7%  │  60.3%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+  pure explanation avg: -Infinity% words, -37922.8% chars, -600.6% lines
+
+── mixed code and explanation ──────────────
+
+Prompt 5/26: "How do I set up a basic Express.js server with middleware..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     202 │    1426 │      53 │
+│ Terse     │     150 │    1160 │      35 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  25.7%  │  18.7%  │  34.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 6/26: "Show me how to implement a debounce function in TypeScrip..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │       0 │       1 │       2 │
+│ Terse     │     173 │    1118 │      36 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │ -Infinity%  │ -111700.0%  │ -1700.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 7/26: "How do I use React's useReducer hook? When should I pick ..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     319 │    2184 │      60 │
+│ Terse     │     177 │    1245 │      41 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  44.5%  │  43.0%  │  31.7%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 8/26: "Explain how to write a recursive function that flattens a..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     225 │    1488 │      54 │
+│ Terse     │     109 │     753 │      26 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  51.6%  │  49.4%  │  51.9%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+  mixed code and explanation avg: -Infinity% words, -27897.2% chars, -395.6% lines
+
+── deliverable code ────────────────────────
+
+Prompt 9/26: "Write a production-ready Express middleware that validate..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │       0 │       1 │       2 │
+│ Terse     │     242 │    2317 │      87 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │ -Infinity%  │ -231600.0%  │ -4250.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 10/26: "Write a React component that implements an accessible aut..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │       0 │       1 │       2 │
+│ Terse     │      25 │     219 │       2 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │ -Infinity%  │ -21800.0%  │   0.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 11/26: "Write a Python function that reads a CSV file, validates ..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │      21 │     143 │       2 │
+│ Terse     │     301 │    3128 │     103 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │ -1333.3%  │ -2087.4%  │ -5050.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+  deliverable code avg: -Infinity% words, -85162.5% chars, -3100.0% lines
+
+── error and technical term preservation ───
+
+Prompt 12/26: "I'm getting this error: `TypeError: Cannot read propertie..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │      66 │     456 │      18 │
+│ Terse     │      53 │     367 │      14 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  19.7%  │  19.5%  │  22.2%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 13/26: "What does `ECONNREFUSED 127.0.0.1:5432` mean and how do I..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     174 │    1107 │      29 │
+│ Terse     │      92 │     624 │      12 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  47.1%  │  43.6%  │  58.6%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 14/26: "Explain the difference between `==` and `===` in JavaScri..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     165 │     955 │      29 │
+│ Terse     │     132 │     732 │      19 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  20.0%  │  23.4%  │  34.5%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+  error and technical term preservation avg: 28.9% words, 28.8% chars, 38.4% lines
+
+── short direct questions ──────────────────
+
+Prompt 15/26: "What's the difference between `let`, `const`, and `var`?"
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │      47 │     360 │      10 │
+│ Terse     │      43 │     329 │      10 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │   8.5%  │   8.6%  │   0.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 16/26: "How do I center a div?"
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │      68 │     504 │      38 │
+│ Terse     │      51 │     390 │      20 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  25.0%  │  22.6%  │  47.4%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 17/26: "What does `git rebase` do?"
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     110 │     672 │      18 │
+│ Terse     │     113 │     716 │      15 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  -2.7%  │  -6.5%  │  16.7%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 18/26: "Best way to deep clone an object in JS?"
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │      43 │     329 │       8 │
+│ Terse     │      41 │     333 │       8 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │   4.7%  │  -1.2%  │   0.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+  short direct questions avg: 8.9% words, 5.9% chars, 16.0% lines
+
+── multi step tutorial ─────────────────────
+
+Prompt 19/26: "Walk me through setting up a new Next.js project with Typ..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     265 │    1779 │      63 │
+│ Terse     │     250 │    1726 │      69 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │   5.7%  │   3.0%  │  -9.5%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 20/26: "How do I deploy a Node.js app to AWS Lambda with API Gate..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     329 │    2733 │     117 │
+│ Terse     │     276 │    2190 │      81 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  16.1%  │  19.9%  │  30.8%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 21/26: "Guide me through creating a GitHub Actions CI pipeline th..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │       0 │       1 │       2 │
+│ Terse     │       0 │       1 │       2 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │   NaN%  │   0.0%  │   0.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+  multi step tutorial avg: NaN% words, 7.6% chars, 7.1% lines
+
+── pleasantry traps ────────────────────────
+
+Prompt 22/26: "I'm new to Docker. Could you kindly explain what containe..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     262 │    1624 │      30 │
+│ Terse     │     196 │    1306 │      25 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  25.2%  │  19.6%  │  16.7%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 23/26: "I'd really appreciate it if you could help me understand ..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │     292 │    2028 │      63 │
+│ Terse     │     302 │    2046 │      73 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  -3.4%  │  -0.9%  │ -15.9%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 24/26: "Sorry to bother you, but can you explain what a REST API is?"
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │      69 │     429 │      13 │
+│ Terse     │     120 │     822 │      21 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │ -73.9%  │ -91.6%  │ -61.5%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+  pleasantry traps avg: -17.4% words, -24.3% chars, -20.2% lines
+
+── boundary cases should not compress ──────
+
+Prompt 25/26: "Write a git commit message for: refactored the user servi..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │      35 │     279 │      10 │
+│ Terse     │      26 │     208 │       8 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │  25.7%  │  25.4%  │  20.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+Prompt 26/26: "Write a PR description for adding rate limiting middlewar..."
+┌───────────┬─────────┬─────────┬─────────┐
+│ Mode      │   Words │   Chars │   Lines │
+├───────────┼─────────┼─────────┼─────────┤
+│ Normal    │      69 │     399 │       4 │
+│ Terse     │     275 │    1965 │      34 │
+├───────────┼─────────┼─────────┼─────────┤
+│ Reduction │ -298.6%  │ -392.5%  │ -750.0%  │
+└───────────┴─────────┴─────────┴─────────┘
+
+  boundary cases should not compress avg: -136.4% words, -183.5% chars, -365.0% lines
+
+Overall Average: NaN% word reduction, -19964.4% char reduction, -533.7% line reduction

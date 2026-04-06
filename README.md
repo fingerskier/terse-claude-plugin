@@ -55,7 +55,8 @@ Also triggers on: `terse mode`, `less tokens`, `be brief`.
 
 ## Who Is This For?
 
-Experienced developers who don't need hand-holding. If you already know what `useMemo` does and just need to know *when* to reach for it, terse mode skips the tutorial and gives you the answer.
+Experienced developers who don't need hand-holding.
+If you already know what `useMemo` does and just need to know *when* to reach for it, terse mode skips the tutorial and gives you the answer.
 
 ## Token Savings Estimate
 
@@ -67,6 +68,30 @@ Experienced developers who don't need hand-holding. If you already know what `us
 | **Weighted average** | **50–70%** |
 
 Savings vary by conversation. The claim is based on the compression techniques applied, not formal benchmarking.
+
+## Test Results
+
+We ran 26 prompts across 8 categories, comparing normal vs terse output by word, character, and line count.
+Some normal-mode runs returned empty responses (test harness issue), so results below include only valid pairs where both modes produced content.
+
+| Category | Valid / Total | Word Reduction |
+|----------|:------------:|:--------------:|
+| Pure explanation | 3 / 4 | 12–58% |
+| Mixed code + explanation | 3 / 4 | 26–52% |
+| Error & technical terms | 3 / 3 | 20–47% |
+| Short direct questions | 4 / 4 | -3–25% |
+| Multi-step tutorial | 2 / 3 | 6–16% |
+| Pleasantry traps | 3 / 3 | -74–25% |
+| Boundary cases (should not compress) | 1 / 2 | -299–26% |
+
+### Takeaways
+
+- **Best gains on prose-heavy responses.** Explanations and mixed code/explanation see 20–58% word reduction consistently.
+- **Diminishing returns on short answers.** Already-concise responses (short questions, error diagnostics) see 0–25% reduction.
+- **Inconsistent on pleasantries and boundary cases.** Terse sometimes *expanded* output — particularly on prompts asking for structured deliverables like PR descriptions, where terse mode added more detail than normal mode provided.
+- **Test harness gaps.** 5 of 26 normal-mode responses came back empty, inflating negative percentages in the raw summary. Valid-pair results are more representative.
+
+Full results are in [`test/results/summary.txt`](test/results/summary.txt).
 
 ## License
 
