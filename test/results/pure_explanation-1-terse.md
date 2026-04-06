@@ -1,26 +1,33 @@
 ## Authentication vs Authorization
 
-**Authentication** = "who are you?" Identity verification.
-**Authorization** = "what can you do?" Permission enforcement.
+**Authentication** = "who are you?" — verifying identity.
+**Authorization** = "what can you do?" — verifying permissions.
 
-Auth*n* happens first, auth*z* depends on it.
+AuthN happens first, authZ depends on it.
 
 ## Authentication Patterns
 
-- **Session-based** — server stores session after login, sends cookie. Stateful. Simple. Scales with session store (Redis).
-- **Token-based (JWT)** — server issues signed token, client sends in `Authorization: Bearer <token>`. Stateless. Watch token size + expiry.
-- **OAuth 2.0 / OIDC** — delegated auth via provider (Google, GitHub). Authorization code flow for web apps. PKCE for SPAs.
-- **Passkeys/WebAuthn** — public-key crypto, phishing-resistant. Browser + authenticator handle challenge-response.
-- **MFA** — layer on top: TOTP, SMS, hardware key. Not standalone.
+- **Session-based**: login → server stores session → cookie with session ID → server looks up on each request
+- **Token-based (JWT)**: login → server returns signed token → client sends in `Authorization: Bearer <token>` → server verifies signature, no server-side state
+- **OAuth 2.0 / OIDC**: delegate authN to provider (Google, GitHub). Authorization code flow most common for web apps. OIDC adds identity layer (ID token) on top of OAuth
+- **Passkeys/WebAuthn**: public-key crypto, phishing-resistant. Browser holds private key, server holds public key
+- **MFA**: layer on top — TOTP (authenticator apps), SMS, hardware keys (FIDO2)
 
 ## Authorization Patterns
 
-- **RBAC** (Role-Based) — user → role → permissions. Most common. `admin`, `editor`, `viewer`. Simple, coarse-grained.
-- **ABAC** (Attribute-Based) — policies eval attributes (user dept, resource owner, time). Fine-grained. More complex.
-- **ACL** — per-resource permission lists. `file X: user A=read, user B=write`. Good for file/document systems.
-- **Policy engines** — externalized rules (OPA/Rego, Cedar, Casbin). Decouple authz logic from app code.
-- **Scope-based** — OAuth scopes limit token permissions. `read:users`, `write:posts`. API-centric.
+- **RBAC** (role-based): user → role → permissions. Simple, widely used. `admin`, `editor`, `viewer`
+- **ABAC** (attribute-based): policies evaluate attributes (user dept, resource owner, time of day). More granular, more complex
+- **ACL** (access control list): per-resource list of who can do what. Fine-grained but doesn't scale well
+- **Policy-based**: centralized policy engine (OPA, Cedar, Casbin). Rules like `allow if user.org == resource.org && user.role in ["admin","editor"]`
+- **Scope-based**: common in APIs/OAuth. Token carries scopes (`read:users`, `write:posts`), server checks scope per endpoint
 
 ## Key Distinction in Practice
 
-Auth*n* middleware runs early (verify token/session). Auth*z* middleware runs per-route or per-resource (check permissions against requested action). Mixing them = security bugs.
+| | AuthN | AuthZ |
+|---|---|---|
+| Question | Who? | What access? |
+| Fails with | 401 Unauthorized | 403 Forbidden |
+| Middleware | Runs first | Runs after identity known |
+| State | Identity/session | Permissions/policies |
+
+Common mistake: 401 is actually authN failure despite name "Unauthorized". 403 = authZ failure.

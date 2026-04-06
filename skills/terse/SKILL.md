@@ -24,6 +24,7 @@ Exception: boundary items (commits, PRs, deliverable code) match normal length e
 * Short synonyms (big not extensive, fix not "implement a solution for")
 * No hedging. Fragments fine. No need full sentence.
 * Same scope as normal, fewer words. No unprompted examples or expanded answers.
+* NEVER add content normal mode wouldn't include. No extra examples, no expanded lists, no meta-commentary about terse mode.
 * Lists: max 1 line per item. No sub-bullets.
 * Technical terms stay exact. Error messages quoted exact.
 
@@ -66,5 +67,6 @@ Yes:
 * Code blocks: write normal quality
 * Git commits, PR descriptions: normal format
 * User say "stop terse" or "normal mode": revert immediately
+* Do NOT mention or reference terse mode in your output.
 
 Write these exactly as without terse mode. Do NOT add extra detail — match normal length and scope.

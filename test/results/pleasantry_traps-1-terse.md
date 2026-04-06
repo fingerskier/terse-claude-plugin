@@ -1,72 +1,39 @@
-## CSS Grid — Core Mental Model
+## CSS Grid
 
-Grid = 2D layout. Rows + columns simultaneously. Flexbox = 1D.
+**Core concept:** 2D layout system. Rows + columns simultaneously (unlike flexbox = 1D).
 
-### Container (parent)
+**Container** — `display: grid` on parent:
+- `grid-template-columns: 200px 1fr 1fr` → 3 cols, first fixed, rest split equally
+- `grid-template-rows: auto 1fr` → row heights
+- `gap: 16px` → gutters between cells
+- `fr` = fractional unit. Divides remaining space proportionally
 
+**Placing items:**
+- Default: auto-flow, fills left→right, top→bottom
+- Explicit: `grid-column: 1 / 3` → span cols 1-2
+- Named: `grid-area: header` with `grid-template-areas` on parent
+
+**Template areas** — most intuitive layout method:
 ```css
-display: grid;
-grid-template-columns: 200px 1fr 1fr;  /* 3 cols: fixed, flex, flex */
-grid-template-rows: auto 1fr auto;      /* header, content, footer */
-gap: 16px;                               /* gutter between cells */
-```
-
-`fr` = fraction of remaining space. `1fr 2fr` = 1/3 + 2/3.
-
-### Placing items (children)
-
-By default, items fill cells left→right, top→bottom. Override with:
-
-```css
-grid-column: 1 / 3;   /* span col lines 1 to 3 (2 cols wide) */
-grid-row: 2 / 4;       /* span row lines 2 to 4 */
-```
-
-Lines are numbered from 1, not 0.
-
-### Named areas (easiest layout method)
-
-```css
-/* container */
 grid-template-areas:
   "header header header"
   "sidebar main main"
   "footer footer footer";
-
-/* children */
-.header  { grid-area: header; }
-.sidebar { grid-area: sidebar; }
-.main    { grid-area: main; }
 ```
+Then child gets `grid-area: sidebar`.
 
-### Key shortcuts
+**Key patterns:**
+- `repeat(3, 1fr)` = `1fr 1fr 1fr`
+- `repeat(auto-fill, minmax(250px, 1fr))` → responsive columns, no media queries
+- `minmax(min, max)` → flexible sizing with bounds
+- `auto-fit` vs `auto-fill`: fit collapses empty tracks, fill keeps them
 
-| Want | Use |
-|---|---|
-| Equal columns | `grid-template-columns: repeat(3, 1fr)` |
-| Auto-fill responsive | `repeat(auto-fill, minmax(200px, 1fr))` |
-| Center single item | `place-items: center` |
-| Span 2 cols | `grid-column: span 2` |
+**Mental model:** Grid = spreadsheet. You define the grid structure on parent, then optionally tell children which cells to occupy. Unplaced children auto-fill next available cell.
 
-### Common gotchas
+**Common struggle points:**
+1. `fr` only works on *remaining* space after fixed/content sizes
+2. Items can overlap — use `grid-column`/`grid-row` to layer, `z-index` to control stack
+3. `align-items`/`justify-items` = within cell. `align-content`/`justify-content` = grid within container
+4. Implicit rows auto-created if more items than defined rows — control with `grid-auto-rows`
 
-- `fr` distributes *remaining* space after fixed/minmax units
-- `auto-fill` creates empty tracks; `auto-fit` collapses them (use `auto-fit` for responsive)
-- Grid items stretch by default. `align-self`/`justify-self` to override
-- Implicit rows (overflow items) sized by `grid-auto-rows`, not `grid-template-rows`
-
-### Alignment
-
-- `justify-*` = inline axis (horizontal by default)
-- `align-*` = block axis (vertical)
-- `place-*` = shorthand for both
-
-Container: `justify-content`, `align-content` (whole grid in container)
-Items: `justify-items`, `align-items` (items in cells)
-Single item: `justify-self`, `align-self`
-
-### Debug tip
-
-Firefox DevTools > Inspector > click grid badge on element. Best grid visualizer available.
-
-What specifically tripping you up? Layout structure, responsive patterns, alignment?
+**Flexbox vs Grid:** Flex = content-out (content dictates size). Grid = layout-in (grid dictates size). Use both — grid for page layout, flex for component internals.

@@ -6,47 +6,60 @@ const cors = require('cors');
 
 const app = express();
 
-// CORS middleware
+// --- Middleware ---
+
+// CORS
 app.use(cors());
+// For specific origins:
+// app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 // Body parsing
 app.use(express.json());
 
-// Logging middleware
+// Request logging
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} ${req.method} ${req.url}`);
   next();
 });
 
-// Routes
+// --- Routes ---
+
 app.get('/', (req, res) => {
-  res.json({ message: 'Hello World' });
+  res.json({ message: 'Hello world' });
 });
+
+// --- Error handling (must be last) ---
 
 // 404 handler
 app.use((req, res, next) => {
   res.status(404).json({ error: 'Not found' });
 });
 
-// Error handler (must have 4 params)
+// Global error handler (4 params required)
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(err.status || 500).json({ error: err.message || 'Internal server error' });
+  res.status(err.status || 500).json({
+    error: process.env.NODE_ENV === 'production'
+      ? 'Internal server error'
+      : err.message
+  });
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+// --- Start ---
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 ```
 
-**Setup:**
+Install dependencies:
+
 ```bash
-npm init -y
 npm install express cors
 ```
 
-**Key points:**
-- Middleware runs in order — put logging before routes, error handler last
-- The error handler **must** have all 4 parameters `(err, req, res, next)` — Express uses the arity to distinguish it from regular middleware
-- `cors()` with no args allows all origins; pass options like `cors({ origin: 'http://localhost:5173' })` to restrict
-- For production logging, consider `morgan` instead of the manual logger
+Key points:
 
-Want me to expand on any part — like custom CORS config, structured logging, or async error handling?
+- **Middleware order matters** — CORS and body parsing go first, error handlers go last
+- **Error handler needs 4 parameters** (`err, req, res, next`) — Express uses the arity to identify it as an error handler
+- **`next(err)`** from any route/middleware skips to the error handler
+- For production logging, consider `morgan` (HTTP logging) or `pino` (structured JSON logging) instead of the manual middleware

@@ -1,7 +1,9 @@
-```
-Refactor user service to use dependency injection
 
-Replace direct database imports with injected dependencies,
-improving testability and decoupling the service from specific
-database implementations.
+
+```
+refactor(user-service): replace direct database imports with dependency injection
+
+Decouple UserService from concrete database modules by accepting
+repository interfaces via constructor injection. Improves testability
+and enables swapping storage backends without modifying service logic.
 ```

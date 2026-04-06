@@ -1,33 +1,38 @@
+## Authentication vs Authorization
 
+**Authentication** = "Who are you?" — verifying identity.
+**Authorization** = "What can you do?" — enforcing permissions.
 
-Authentication verifies **who you are**; authorization determines **what you're allowed to do**.
+---
 
-## Authentication (AuthN)
+### Authentication Patterns
 
-Proves identity. Common patterns:
+**Session-based**: User submits credentials, server creates a session (stored in DB/Redis), returns a session cookie. Each request sends the cookie; server looks up the session. Simple, but requires server-side state.
 
-- **Session-based**: Server stores session after login; browser sends session cookie on each request.
-- **Token-based (JWT)**: Server issues a signed token at login; client sends it in `Authorization: Bearer <token>` header. Stateless on the server side.
-- **OAuth 2.0 / OpenID Connect**: Delegate authentication to a provider (Google, GitHub). The app receives an ID token or access token after the user consents.
-- **Passkeys / WebAuthn**: Cryptographic key pair stored on device; no passwords transmitted.
-- **MFA**: Layer a second factor (TOTP, SMS, hardware key) on top of any of the above.
+**Token-based (JWT)**: Server issues a signed JWT after login. Client stores it (usually `localStorage` or a cookie) and sends it via `Authorization: Bearer <token>`. Server validates the signature without a DB lookup. Stateless, but tokens can't be revoked easily without a blocklist.
 
-## Authorization (AuthZ)
+**OAuth 2.0 / OpenID Connect**: Delegates authentication to an identity provider (Google, GitHub, etc.). The app receives an authorization code, exchanges it for tokens. Used for "Sign in with X" flows.
 
-Controls access after identity is established. Common patterns:
+**Passkeys / WebAuthn**: Cryptographic key pair stored on the user's device. No passwords to steal or phish. Growing adoption.
 
-- **Role-Based Access Control (RBAC)**: Users get roles (`admin`, `editor`, `viewer`); permissions are tied to roles.
-- **Attribute-Based Access Control (ABAC)**: Decisions based on attributes of user, resource, and context (e.g., "user.department == resource.department AND time < 17:00").
-- **Permission-based**: Fine-grained flags (`can_delete_posts`, `can_invite_users`) checked per action.
-- **OAuth scopes**: Token carries scopes (`read:repos`, `write:issues`) that limit what API calls it can make.
-- **Policy engines**: Centralized rules (e.g., OPA/Rego, Cedar) evaluated at enforcement points.
+**Multi-factor (MFA)**: Combines something you know (password) with something you have (TOTP code, hardware key) or something you are (biometrics).
 
-## How they connect
+---
 
-```
-Request → AuthN middleware (verify identity)
-        → AuthZ middleware (check permissions)
-        → Handler (do the work)
-```
+### Authorization Patterns
 
-AuthN always comes first — you can't check what someone is allowed to do if you don't know who they are.
+**Role-Based Access Control (RBAC)**: Users are assigned roles (`admin`, `editor`, `viewer`). Permissions are attached to roles. Simple and widely used.
+
+**Attribute-Based Access Control (ABAC)**: Decisions based on attributes of the user, resource, and environment (e.g., "managers can approve expenses under $10k in their own department"). More flexible, more complex.
+
+**Permission-based**: Fine-grained flags like `posts:write`, `users:delete` assigned directly to users or roles. Common in APIs.
+
+**Policy engines**: Externalized authorization logic (e.g., Open Policy Agent, Cedar). Policies are decoupled from application code. Good for complex or cross-service rules.
+
+**Scope-based (OAuth)**: Access tokens carry scopes (`read:email`, `repo`) that limit what the token holder can do, regardless of the user's full permissions.
+
+---
+
+### Key Principle
+
+Keep them separate. Authenticate once at the edge (middleware), then pass the verified identity into authorization checks deeper in the stack. Mixing them together leads to fragile, hard-to-audit security logic.

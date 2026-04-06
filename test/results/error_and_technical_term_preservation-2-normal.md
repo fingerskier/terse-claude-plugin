@@ -6,23 +6,22 @@
 No conversion. Different types → `false`.
 ```js
 1 === '1'    // false
-0 === false  // false
 null === undefined // false
 ```
 
 **`==` (loose) coercion rules:**
-1. `null == undefined` → `true` (and neither equals anything else)
-2. Number vs String → string converted to number: `1 == '1'` → `true`
-3. Boolean vs anything → boolean converted to number first: `true == '1'` → `1 == '1'` → `true`
-4. Object vs primitive → object's `valueOf()`/`toString()` called
+- `null == undefined` → `true` (and nothing else equals either)
+- String vs Number → string converted to number: `'5' == 5` → `true`
+- Boolean vs anything → boolean converted to number first: `true == '1'` → `1 == '1'` → `1 == 1` → `true`
+- Object vs primitive → object converted via `valueOf()`/`toString()`: `[1] == 1` → `'1' == 1` → `true`
 
 **Common gotchas:**
 ```js
-'' == false     // true (both become 0)
+'' == 0        // true ('' → 0)
+'0' == false   // true (false → 0, '0' → 0)
+'' == false     // true (both → 0)
 [] == false     // true ([] → '' → 0, false → 0)
-[] == ![]       // true (![] is false, then [] == false)
-null == 0       // false (null only == undefined)
-NaN == NaN      // false (both == and ===)
+[] == ![]       // true (![] is false, then same as above)
 ```
 
-**Rule of thumb:** Always use `===` unless you specifically want `null == undefined` coalescing.
+**Rule of thumb:** Use `===` by default. Use `==` only for `x == null` (catches both `null` and `undefined`).

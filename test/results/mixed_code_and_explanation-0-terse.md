@@ -1,4 +1,4 @@
-`npm install express cors morgan`
+`npm i express cors morgan`
 
 ```js
 const express = require('express');
@@ -8,27 +8,25 @@ const morgan = require('morgan');
 const app = express();
 
 // Middleware
-app.use(cors());                    // CORS - all origins by default
-app.use(morgan('dev'));             // Logging - method, url, status, time
-app.use(express.json());           // Parse JSON bodies
+app.use(cors());              // CORS headers
+app.use(morgan('dev'));        // Request logging
+app.use(express.json());      // Body parsing
 
 // Routes
-app.get('/', (req, res) => {
-  res.json({ status: 'ok' });
-});
+app.get('/', (req, res) => res.json({ status: 'ok' }));
 
-// Error handler - must be last, must have 4 params
+// Error handler — must be 4-arg
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({ error: err.message });
 });
 
-app.listen(3000, () => console.log('Listening on :3000'));
+app.listen(3000, () => console.log('Listening on 3000'));
 ```
 
 Key points:
-- **Order matters**: CORS/logging before routes, error handler after
-- **CORS**: restrict origins via `cors({ origin: 'https://yourdomain.com' })`
-- **morgan formats**: `'dev'` (colored status), `'combined'` (Apache-style), `'tiny'` (minimal)
-- **Error handler**: Express identifies it by 4-param signature — skip `next` param and it won't work
-- **Async errors** (Express <5): wrap in `try/catch`, call `next(err)`. Express 5+ auto-catches async
+- `morgan('dev')` — colored status logs. Use `'combined'` for production (Apache format)
+- `cors()` no-arg = allow all origins. Restrict: `cors({ origin: 'https://yourdomain.com' })`
+- Error middleware **must** have 4 params `(err, req, res, next)` — Express uses arity to detect it
+- Order matters: CORS + logging before routes, error handler after routes
+- Async errors need explicit `next(err)` or use `express-async-errors` pkg to auto-catch

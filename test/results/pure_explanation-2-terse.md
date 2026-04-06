@@ -6,24 +6,24 @@
 - **A**vailability — every request gets response
 - **P**artition tolerance — system works despite network splits
 
-Partition tolerance non-optional in distributed systems, so real choice is **CP vs AP** during partitions.
+Partition tolerance non-negotiable in distributed systems, so real choice is **CP vs AP** during partitions.
 
-## Database mapping
+## DB Mapping
 
-| DB | Model | CAP trade-off | When partition hits |
-|---|---|---|---|
-| **PostgreSQL** | Single-node default | CA (no partitions) | N/A — not distributed by default. With Citus/patroni: CP |
-| **MongoDB** | Replica sets | CP | Elects new primary, brief unavailability. Reads from secondaries possible but stale |
-| **Cassandra** | Masterless ring | AP (tunable) | All nodes accept writes. Consistency tunable per query via `QUORUM`/`ALL`/`ONE` |
+| DB | CAP profile | Why |
+|---|---|---|
+| **PostgreSQL** | CA (single-node) / CP (replicated) | Strong consistency, single-leader. Partition = primary stays consistent, replicas may be unavailable |
+| **MongoDB** | CP | Replica set w/ single primary. During partition, minority side loses writes. Consistency over availability |
+| **Cassandra** | AP | Masterless, tunable consistency. Defaults to availability — accepts writes on any node, reconciles later via timestamps |
 
-## Decision guide
+## Choosing
 
-**PostgreSQL** — Strong consistency, ACID, complex queries. Not inherently distributed. Pick when: relational model fits, single-region, transactions matter.
+- Need ACID transactions, strong consistency → **PostgreSQL**. Tradeoff: vertical scaling limits, failover has downtime window
+- Need flexible schema + consistency + horizontal reads → **MongoDB**. Tradeoff: writes bottleneck at primary
+- Need high write throughput, multi-DC, always-on → **Cassandra**. Tradeoff: eventual consistency, no joins, data modeling around queries
 
-**MongoDB** — Document model, CP by default. Pick when: flexible schema, moderate scale, consistency > availability during failures.
+## Nuance
 
-**Cassandra** — AP default, linear write scale, multi-DC native. Pick when: massive write throughput, global distribution, eventual consistency acceptable.
+CAP is partition-time behavior. Day-to-day (no partitions), all three provide all three. Real decision factors: data model, query patterns, ops complexity, consistency needs *during failures*.
 
-## Key nuance
-
-CAP is about behavior *during partitions*. Normal operation: all three achievable. Real-world choice is more about latency/consistency spectrum (see PACELC theorem — adds Else Latency/Consistency trade-off for non-partition state).
+Cassandra's tunable consistency (`QUORUM` reads/writes) can approximate CP per-query. MongoDB's `readPreference: secondary` can approximate AP. Lines blur in practice.

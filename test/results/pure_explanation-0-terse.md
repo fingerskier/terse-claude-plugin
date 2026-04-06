@@ -2,16 +2,16 @@
 
 **Call stack** — single-threaded execution. Functions push/pop LIFO. Blocks until empty.
 
-**Task queue** (macrotasks) — `setTimeout`, `setInterval`, I/O, UI rendering. One task per loop iteration.
+**Task queue** (macrotask) — `setTimeout`, `setInterval`, I/O, UI events. One task per loop tick after stack empties.
 
-**Microtask queue** — `Promise.then/catch/finally`, `queueMicrotask`, `MutationObserver`. Drains entirely after each task, before next task or render.
+**Microtask queue** — `Promise.then/catch/finally`, `queueMicrotask`, `MutationObserver`. **Drains entirely** between each macrotask — microtasks always beat next macrotask.
 
 **Loop cycle:** call stack empties → drain all microtasks → one macrotask → repeat.
 
 ### Key interactions
 
-- `setTimeout(fn, 0)` — macrotask. Runs after current script + all microtasks.
-- `Promise.resolve().then(fn)` — microtask. Runs before any macrotask.
+- `setTimeout(fn, 0)` — macrotask queue. Runs after all microtasks.
+- `Promise.resolve().then(fn)` — microtask. Runs before any pending setTimeout.
 - `async/await` — sugar over promises. Code after `await` = `.then()` callback = microtask.
 
 ### Execution order demo
@@ -46,6 +46,4 @@ console.log('7: sync end')
 2: timeout
 ```
 
-**Why:** 1, 5, 7 are synchronous (call stack). Then microtask queue drains: 3, 6 (both queued microtasks), then 4 (chained from 3). Finally macrotask: 2.
-
-Note: 6 and 3 are same-priority microtasks — order depends on scheduling. `await` resumes after already-queued `.then`s at same depth.
+**Why:** sync code runs first (1, 5, 7). Stack empties → microtasks drain in order (3, 6, 4). Then macrotask (2). Note `await` splits function — everything before runs sync, everything after queues as microtask.

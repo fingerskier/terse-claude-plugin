@@ -1,4 +1,4 @@
-Several ways, depending on context:
+A few common ways:
 
 **Flexbox (most common):**
 ```css
@@ -27,11 +27,12 @@ Several ways, depending on context:
 }
 ```
 
-**Horizontal only:**
+**Margin auto (horizontal only):**
 ```css
 .child {
+  width: 200px;
   margin: 0 auto;
 }
 ```
 
-Flexbox or grid with `place-items: center` are the go-to choices for most cases.
+Flexbox or grid are the go-to choices for most cases.

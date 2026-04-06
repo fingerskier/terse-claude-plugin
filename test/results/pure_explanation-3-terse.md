@@ -4,19 +4,24 @@
 
 ```js
 function counter() {
-  let n = 0;
-  return () => ++n;
+  let n = 0
+  return () => ++n
 }
-const c = counter(); // c() → 1, 2, 3...
+const c = counter() // c() → 1, 2, 3...
 ```
 
-**Why they matter:** enable private state, data encapsulation without classes.
+Inner fn "closes over" `n`. `n` persists as long as inner fn exists.
+
+**Why they matter:**
+- Data privacy — no direct access to `n` above
+- State without classes — factory functions, module pattern
+- Partial application — `const add5 = (b) => 5 + b` from `const adder = (a) => (b) => a + b`
 
 **Intentional uses:**
-- **Data privacy** — module pattern, factory functions w/ hidden internals
-- **Partial application / currying** — `const add5 = x => x + 5`
-- **Callbacks/event handlers** — capture context at creation time
+- **Event handlers/callbacks** — capture context without globals
 - **Memoization** — cache lives in closure scope
-- **Iterators/generators** — maintain iteration state
+- **Iterators/generators** — maintain position state
+- **Module pattern** — expose public API, hide internals
+- **Currying** — transform multi-arg fn into chain of single-arg fns
 
-**Gotcha:** closures in loops capture variable *ref*, not value. Fix w/ `let` (block-scoped) or IIFE.
+**Gotcha:** closures in loops capture variable *ref*, not value. Classic `var` loop bug — fix with `let` (block-scoped) or IIFE.

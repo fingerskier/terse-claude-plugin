@@ -1,4 +1,4 @@
-A **closure** is a function that retains access to variables from its enclosing scope, even after that scope has finished executing.
+A **closure** is a function that retains access to variables from its enclosing scope, even after that outer function has finished executing.
 
 ```js
 function makeCounter() {
@@ -13,45 +13,19 @@ counter(); // 1
 counter(); // 2
 ```
 
-`makeCounter` has returned, but the inner function still reads and mutates `count`. That binding is the closure.
+`makeCounter` has returned, but the inner function still reads and mutates `count`. That binding is "closed over" — hence *closure*.
 
 ## Why they matter
 
-- **They're how JS scoping works.** Every function closes over its parent scope. You use closures constantly whether you realize it or not — callbacks, event handlers, `.then()` chains, `setTimeout`.
-- **They enable private state.** JS has no true private fields on plain objects (class `#fields` aside). Closures give you encapsulation without classes.
+- **They're how JS scoping works.** Every function that references an outer variable forms a closure. You use them constantly whether you realize it or not — callbacks, event handlers, `.map()/.filter()` lambdas.
+- **They enable private state.** JS has no built-in access modifiers (outside classes with `#private`). Closures let you hide variables from outside access while exposing controlled interfaces.
+- **They preserve context.** Async code, timers, and event listeners run later but still need the variables from when they were created.
 
-## Intentional uses
+## When you'd use one intentionally
 
-**Data privacy / module pattern:**
-```js
-function createWallet(initial) {
-  let balance = initial;
-  return {
-    spend(amount) { balance -= amount; },
-    check() { return balance; },
-  };
-}
-```
-No outside code can touch `balance` directly.
+1. **Data privacy / encapsulation** — module pattern, factory functions that expose methods but hide internals.
+2. **Partial application / currying** — `const add5 = makeAdder(5)` where `makeAdder` closes over the first argument.
+3. **Callbacks with state** — event handlers or `setTimeout` that need to remember something from their creation context.
+4. **Memoization** — a returned function that checks and updates a closed-over cache object.
 
-**Partial application / factories:**
-```js
-function withBaseUrl(base) {
-  return (path) => `${base}${path}`;
-}
-const api = withBaseUrl('https://example.com');
-api('/users'); // https://example.com/users
-```
-
-**Preserving loop state** (classic gotcha):
-```js
-for (var i = 0; i < 3; i++) {
-  setTimeout(((j) => () => console.log(j))(i), 100);
-}
-// 0, 1, 2 — not 3, 3, 3
-```
-(`let` fixes this naturally since it's block-scoped, but the underlying mechanism is still a closure.)
-
-## The one thing to watch
-
-Closures keep references alive. If a closure captures a large object you no longer need, it won't be garbage-collected. This rarely matters in practice, but it's the main cost.
+The classic gotcha: closures capture *variables*, not *values*. A `var` in a loop shares one binding across iterations. Fix with `let` (block-scoped) or an IIFE that creates a fresh scope per iteration.

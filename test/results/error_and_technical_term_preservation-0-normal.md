@@ -1,4 +1,4 @@
-`data.results` is `undefined`. Either `data` itself is `undefined`/`null`, or it doesn't have a `results` property.
+`data.results` is `undefined`. Either `data` doesn't have a `results` property, or `data` itself is undefined/null.
 
 Fix with optional chaining:
 
@@ -14,4 +14,4 @@ if (data?.results) {
 }
 ```
 
-Check what `data` actually contains (`console.log(data)`) to find the root cause — likely an API response that doesn't match the expected shape.
+Check what `data` actually contains — `console.log(data)` — to find the root cause (wrong API response shape, async timing, typo in property name, etc.).

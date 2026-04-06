@@ -19,7 +19,7 @@ const flatten = arr => {
 }
 ```
 
-**Key tradeoffs:**
-- Recursive: clean, but stack overflow on very deep nesting (~10k+ levels)
-- Iterative: heap-allocated stack, no depth limit
-- Built-in: `arr.flat(Infinity)` — use this in practice
+**Tradeoffs:**
+- Recursive: clean, readable. Blows stack on very deep nesting (~10k+ levels)
+- Iterative: heap-allocated stack, no depth limit. Slightly harder to read
+- Built-in: `arr.flat(Infinity)` — use this in practice unless targeting old environments

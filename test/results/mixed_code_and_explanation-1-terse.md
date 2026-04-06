@@ -1,35 +1,50 @@
 ## Debounce in TypeScript
 
 ```typescript
-function debounce<T extends (...args: any[]) => void>(fn: T, ms: number): (...args: Parameters<T>) => void {
-  let timer: ReturnType<typeof setTimeout>
+function debounce<T extends (...args: any[]) => void>(
+  fn: T,
+  ms: number
+): (...args: Parameters<T>) => void {
+  let timer: ReturnType<typeof setTimeout>;
   return (...args) => {
-    clearTimeout(timer)
-    timer = setTimeout(() => fn(...args), ms)
-  }
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), ms);
+  };
 }
 ```
 
 ## Debounce vs Throttle
 
-| | Debounce | Throttle |
+**Debounce** — waits until activity *stops*, then fires once.
+- Search input: fire after user stops typing
+- Window resize: recalc layout after resize ends
+- Auto-save: save after edits pause
+
+**Throttle** — fires at most once per interval, *during* activity.
+- Scroll handler: update position max 1x/100ms
+- Rate-limited API calls: cap request frequency
+- Drag events: sample position at fixed rate
+
+**Mental model:** Debounce = "wait for calm." Throttle = "sample at interval."
+
+| | Fires during activity | Fires after stop |
 |---|---|---|
-| Fires | After activity **stops** for `ms` | At most once per `ms` **during** activity |
-| Pattern | Reset timer each call | Block calls until cooldown expires |
-| Use | Search input, resize end, form validation | Scroll handler, mousemove, rate-limited API |
+| **Debounce** | No | Yes (once) |
+| **Throttle** | Yes (periodic) | Maybe (trailing) |
 
-**Mental model:** Debounce = "wait til they're done." Throttle = "sample at interval."
-
-Debounce for bursty input where only final value matters. Throttle when you need periodic updates during continuous activity.
-
-Throttle for reference:
+Throttle variant for reference:
 
 ```typescript
-function throttle<T extends (...args: any[]) => void>(fn: T, ms: number): (...args: Parameters<T>) => void {
-  let last = 0
+function throttle<T extends (...args: any[]) => void>(
+  fn: T,
+  ms: number
+): (...args: Parameters<T>) => void {
+  let last = 0;
   return (...args) => {
-    const now = Date.now()
-    if (now - last >= ms) { last = now; fn(...args) }
-  }
+    const now = Date.now();
+    if (now - last >= ms) { last = now; fn(...args); }
+  };
 }
 ```
+
+Pick debounce when final value matters. Pick throttle when periodic updates matter.

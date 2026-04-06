@@ -1,40 +1,27 @@
-## `useReducer`
+
+
+`useReducer(reducer, initialState)` — returns `[state, dispatch]`.
 
 ```js
-const [state, dispatch] = useReducer(reducer, initialState)
-```
-
-`reducer` = `(state, action) => newState`. Dispatch actions, reducer returns next state.
-
-```js
-function reducer(state, action) {
+const reducer = (state, action) => {
   switch (action.type) {
     case 'increment': return { count: state.count + 1 }
-    case 'set': return { count: action.payload }
-    default: return state
+    case 'reset': return { count: 0 }
   }
 }
-
 const [state, dispatch] = useReducer(reducer, { count: 0 })
 dispatch({ type: 'increment' })
-dispatch({ type: 'set', payload: 5 })
 ```
 
-## When to pick over `useState`
+**Pick useReducer over useState when:**
+- State has multiple sub-values that change together
+- Next state depends on previous state
+- State transitions follow named actions (login/logout/error)
+- Reducer logic is testable outside component
 
-**Use `useReducer` when:**
-- State has multiple sub-values (object/array with related fields)
-- Next state depends on previous state in complex ways
-- Multiple actions modify same state differently
-- State transitions have business logic worth centralizing
+**Stick with useState when:**
+- Single primitive value (bool, string, number)
+- Independent state updates
+- No complex transitions
 
-**Stick with `useState` when:**
-- Single primitive value
-- Simple set/toggle
-- Independent state fields
-
-## Rule of thumb
-
-One `useState` = fine. Two related `useState` = fine. Three+ related `useState` where updates interleave = switch to `useReducer`. Keeps transitions explicit, testable (pure function), debuggable.
-
-Bonus: pass `dispatch` down instead of multiple setter callbacks — stable ref, no re-render churn from prop changes.
+Rule of thumb: if you're calling multiple `setState` calls together or have `setState(prev => ...)` chains, switch to `useReducer`. Reducer centralizes logic, dispatch is stable ref (no re-render issues in deps).

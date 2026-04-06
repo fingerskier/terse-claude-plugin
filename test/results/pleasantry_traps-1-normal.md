@@ -1,62 +1,77 @@
 CSS Grid is a 2D layout system. Here's the core mental model:
 
-**Container (parent)** — gets `display: grid` and defines the structure:
+**Container** (the parent) defines the grid structure. **Items** (children) place themselves in it.
+
+### Basics
 
 ```css
 .container {
   display: grid;
-  grid-template-columns: 200px 1fr 1fr;  /* 3 columns */
-  grid-template-rows: auto 1fr auto;      /* 3 rows */
-  gap: 16px;                               /* space between cells */
+  grid-template-columns: 200px 1fr 1fr; /* 3 columns */
+  grid-template-rows: auto 1fr auto;    /* 3 rows */
+  gap: 16px;                            /* spacing between cells */
 }
 ```
 
-**Items (children)** — placed into that structure automatically or explicitly:
+- `fr` = fractional unit. `1fr 2fr` means the second column gets twice the space of the first.
+- `auto` = sized to content.
+- `gap` = gutters between rows/columns.
+
+### Placing items
+
+By default, items flow into cells left-to-right, top-to-bottom. You can explicitly place them:
 
 ```css
-.sidebar { grid-column: 1; grid-row: 1 / 3; }   /* span 2 rows */
-.header  { grid-column: 2 / 4; }                  /* span columns 2-3 */
+.item {
+  grid-column: 1 / 3;  /* span from line 1 to line 3 (2 columns) */
+  grid-row: 2 / 4;     /* span from line 2 to line 4 (2 rows) */
+}
 ```
 
-**Key concepts:**
+Grid lines are numbered starting at 1, not 0.
 
-1. **`fr` unit** — "fraction of remaining space." `1fr 2fr` means the second column gets twice the space of the first.
-
-2. **`grid-template-columns` / `rows`** — defines the track sizes. Mix units freely: `200px 1fr auto`.
-
-3. **`gap`** — spacing between tracks (replaces margins between items).
-
-4. **Placement** — items auto-fill left-to-right, top-to-bottom. Override with `grid-column` / `grid-row` using line numbers (1-based).
-
-5. **`repeat()`** — shorthand: `repeat(3, 1fr)` = `1fr 1fr 1fr`.
-
-6. **`minmax()`** — responsive tracks: `minmax(200px, 1fr)` = at least 200px, grows to fill.
-
-7. **`auto-fill` / `auto-fit`** — responsive column count without media queries:
-   ```css
-   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-   ```
-
-**Common layout pattern (holy grail):**
+### Named areas (the easiest approach for page layouts)
 
 ```css
-.page {
+.container {
   display: grid;
-  grid-template: "header header" auto
-                 "sidebar main" 1fr
-                 "footer footer" auto
-                 / 250px 1fr;
+  grid-template-areas:
+    "header header header"
+    "sidebar main main"
+    "footer footer footer";
+  grid-template-columns: 200px 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
 }
+
 .header  { grid-area: header; }
 .sidebar { grid-area: sidebar; }
 .main    { grid-area: main; }
 .footer  { grid-area: footer; }
 ```
 
-**Grid vs Flexbox:**
+This is the most readable way to build layouts — you can literally see the structure.
+
+### Useful shortcuts
+
+| Pattern | What it does |
+|---|---|
+| `repeat(3, 1fr)` | Same as `1fr 1fr 1fr` |
+| `repeat(auto-fill, minmax(200px, 1fr))` | Responsive grid — fills as many 200px+ columns as fit |
+| `place-items: center` | Centers all items in their cells |
+| `grid-column: span 2` | Item spans 2 columns from wherever it lands |
+
+### Grid vs Flexbox
+
 - **Flexbox** = 1D (row *or* column)
 - **Grid** = 2D (rows *and* columns simultaneously)
 
-Use Grid when you need alignment in both directions. Use Flexbox for single-axis flows like navbars or card rows.
+Use Flexbox for components (navbars, card contents). Use Grid for page layouts and anything where you need alignment in both dimensions.
 
-What specifically are you struggling with? I can dig into any of these areas more.
+### Where people get stuck
+
+1. **Forgetting `display: grid`** — nothing works without it on the container
+2. **Confusing lines vs tracks** — 3 columns create 4 lines (1, 2, 3, 4)
+3. **Implicit grid** — items that overflow the defined grid create new rows automatically, controlled by `grid-auto-rows`
+4. **`minmax()`** — use it for responsive grids instead of media queries: `grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))`
+
+What specifically have you been struggling with? I can dig into any of these areas.

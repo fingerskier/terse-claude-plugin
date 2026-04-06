@@ -1,4 +1,4 @@
-No worries — here's the rundown from what I know.
+No worries — here's the answer from what I know.
 
 ## `useReducer` basics
 
@@ -6,11 +6,8 @@ No worries — here's the rundown from what I know.
 const [state, dispatch] = useReducer(reducer, initialState);
 ```
 
-- **`reducer`** — a pure function `(state, action) => newState`
-- **`initialState`** — the starting value
-- **`dispatch`** — call this with an action to trigger a state update
-
-### Minimal example
+- **reducer** — a pure function `(state, action) => newState`
+- **dispatch** — sends an action to the reducer
 
 ```jsx
 function reducer(state, action) {
@@ -23,10 +20,9 @@ function reducer(state, action) {
 
 function Counter() {
   const [state, dispatch] = useReducer(reducer, { count: 0 });
-
   return (
     <>
-      <p>{state.count}</p>
+      <span>{state.count}</span>
       <button onClick={() => dispatch({ type: 'increment' })}>+</button>
       <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
     </>
@@ -38,22 +34,17 @@ function Counter() {
 
 | Pick `useReducer` when… | Stick with `useState` when… |
 |---|---|
-| State is an object/array with multiple sub-values | State is a single primitive (boolean, string, number) |
-| Next state depends on previous state in complex ways | Updates are simple replacements |
-| Multiple actions can modify the same state | One or two setters cover everything |
+| State has multiple sub-values (e.g. form with many fields) | Single primitive or simple value |
+| Next state depends on previous state in complex ways | Updates are straightforward assignments |
+| Multiple actions can modify the same state | One or two ways to update |
 | You want update logic testable outside the component | Logic is trivial |
-| You're passing `dispatch` down instead of multiple callbacks | Few or no child consumers |
+| State transitions need to be explicit/documented | Quick prototyping |
 
-### Rules of thumb
+**Rule of thumb:** if you find yourself writing multiple `useState` calls that change together, or your setter callbacks are getting complex, that's the signal to switch to `useReducer`.
 
-1. **If you find yourself writing 3+ related `useState` calls** that always update together, consolidate into `useReducer`.
-2. **If your setter callbacks contain branching logic** (if/else on current state), move that logic into a reducer.
-3. **`dispatch` is identity-stable** (never changes between renders), so passing it to deep children or context avoids unnecessary re-renders — unlike inline callbacks from `useState` setters.
-
-### Lazy initialization (third argument)
+## Lazy initialization (optional 3rd arg)
 
 ```jsx
 const [state, dispatch] = useReducer(reducer, initialArg, init);
+// init(initialArg) runs once to compute initial state — useful for expensive setup
 ```
-
-`init(initialArg)` runs once to compute the initial state — useful when initialization is expensive (e.g., parsing props into a complex structure).

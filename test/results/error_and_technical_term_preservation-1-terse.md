@@ -1,11 +1,26 @@
-PostgreSQL not running or not listening on port 5432.
 
-**Causes & fixes:**
 
-1. **DB not running** — `brew services start postgresql` (macOS) or `sudo systemctl start postgresql` (Linux)
-2. **Wrong port** — check `postgresql.conf` for `port =`, match in connection string
-3. **Docker** — container not started or port not mapped. `docker ps` to check, `docker start <container>`
-4. **Listen address** — `postgresql.conf` has `listen_addresses = 'localhost'` (not commented out)
-5. **pg_hba.conf** — missing `host all all 127.0.0.1/32 md5` line
+`ECONNREFUSED 127.0.0.1:5432` — nothing listening on localhost port 5432 (default PostgreSQL).
 
-Quick diag: `pg_isready -h 127.0.0.1 -p 5432`. Shows if PG accepts connections.
+**Causes, most→least common:**
+1. PostgreSQL not running
+2. Running but on different port/socket
+3. `pg_hba.conf` rejecting connection (rare for this error)
+
+**Fixes:**
+
+```bash
+# Check if running
+pg_isready            # or: brew services list | grep postgres
+
+# Start it
+brew services start postgresql    # macOS
+sudo systemctl start postgresql   # Linux
+
+# Verify port
+grep port /opt/homebrew/var/postgresql@*/postgresql.conf  # macOS
+```
+
+If using Docker: container might not be up or port not mapped — `docker ps | grep postgres`.
+
+If app config: confirm `host`, `port`, `user`, `password` match running instance.

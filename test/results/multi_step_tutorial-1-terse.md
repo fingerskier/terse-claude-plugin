@@ -1,80 +1,78 @@
 ## Deploy Node.js to AWS Lambda + API Gateway
 
-### 1. Structure app
+**1. Structure app**
+- Entry point exports handler: `export const handler = async (event) => { ... }`
+- Return `{ statusCode, headers, body: JSON.stringify(data) }`
+- If using Express, wrap with `@vendia/serverless-express` or `serverless-http`
 
-```
-project/
-  index.mjs      # handler
-  package.json
-```
-
-Handler exports Lambda-compatible function:
-
-```js
-export const handler = async (event) => {
-  return { statusCode: 200, body: JSON.stringify({ msg: "ok" }) }
-}
-```
-
-### 2. Package
-
+**2. Package**
 ```bash
-npm install --omit=dev
 zip -r function.zip index.mjs node_modules/
 ```
-
-### 3. Create IAM role
-
+Or use `esbuild` to bundle single file (smaller, faster cold starts):
 ```bash
-aws iam create-role --role-name lambda-exec \
-  --assume-role-policy-document '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"lambda.amazonaws.com"},"Action":"sts:AssumeRole"}]}'
-aws iam attach-role-policy --role-name lambda-exec \
-  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+esbuild index.ts --bundle --platform=node --outfile=dist/index.mjs --format=esm
 ```
 
-### 4. Create Lambda function
-
+**3. Create Lambda (CLI)**
 ```bash
-aws lambda create-function --function-name my-api \
-  --runtime nodejs20.x --handler index.handler \
+aws lambda create-function \
+  --function-name my-api \
+  --runtime nodejs20.x \
+  --handler index.handler \
   --zip-file fileb://function.zip \
-  --role arn:aws:iam::ACCOUNT_ID:role/lambda-exec
+  --role arn:aws:iam::ACCT:role/lambda-exec-role
 ```
 
-### 5. Create API Gateway (HTTP API — simpler than REST)
+IAM role needs `AWSLambdaBasicExecutionRole` policy minimum.
 
+**4. Create API Gateway**
 ```bash
-aws apigatewayv2 create-api --name my-api --protocol-type HTTP \
-  --target arn:aws:lambda:REGION:ACCOUNT_ID:function:my-api
+# HTTP API (simpler, cheaper)
+aws apigatewayv2 create-api --name my-api --protocol-type HTTP
+
+# Add Lambda integration
+aws apigatewayv2 create-integration \
+  --api-id API_ID \
+  --integration-type AWS_PROXY \
+  --integration-uri arn:aws:lambda:REGION:ACCT:function:my-api
+
+# Add catch-all route
+aws apigatewayv2 create-route \
+  --api-id API_ID \
+  --route-key '$default' \
+  --target integrations/INTEGRATION_ID
+
+# Deploy
+aws apigatewayv2 create-stage --api-id API_ID --stage-name '$default' --auto-deploy
 ```
 
-This auto-creates default stage + Lambda integration.
-
-### 6. Grant API GW permission to invoke Lambda
-
+**5. Grant API GW permission to invoke Lambda**
 ```bash
-aws lambda add-permission --function-name my-api \
-  --statement-id apigateway --action lambda:InvokeFunction \
+aws lambda add-permission \
+  --function-name my-api \
+  --statement-id apigateway \
+  --action lambda:InvokeFunction \
   --principal apigateway.amazonaws.com
 ```
 
-### 7. Get endpoint
-
+**6. Get endpoint**
 ```bash
 aws apigatewayv2 get-api --api-id API_ID
-# → ApiEndpoint field is your URL
+# → ApiEndpoint: https://xxx.execute-api.region.amazonaws.com
 ```
 
-### Alternatives worth knowing
+## Faster alternatives
 
-- **SAM** (`sam init` + `sam deploy`) — handles all above in one template. Best for real projects.
-- **SST** — higher-level, good DX, live Lambda dev.
-- **Serverless Framework** — `serverless deploy`, config-driven.
+- **SAM**: `sam init` → `sam deploy --guided` — handles all above automatically
+- **SST**: `npx sst deploy` — best DX for Node.js Lambda
+- **CDK**: Infrastructure as TypeScript, `cdk deploy`
+- **Serverless Framework**: `serverless deploy`
 
-### Common gotchas
+## Key gotchas
 
-- Lambda has 250MB unzipped limit. Use layers for big deps.
-- Cold starts: keep bundle small, use `nodejs20.x`+.
-- `event.body` is string — parse it. `event.pathParameters` for route params.
-- Default timeout 3s. Set `--timeout 30` if needed.
-- API GW HTTP API = cheaper + simpler. REST API only if need request validation, WAF, or usage plans.
+- Lambda timeout default 3s, max 15min. Set via `--timeout`
+- Memory = CPU scaling. 1769MB = 1 vCPU
+- Cold starts: bundle small, use ESM, avoid heavy SDKs at top-level
+- `event.body` is string — parse it
+- CORS: return `Access-Control-Allow-Origin` header manually or enable on API GW

@@ -1,102 +1,49 @@
 ```python
 import csv
-from dataclasses import dataclass, field
 from typing import Any, Callable
 
-FieldValidator = Callable[[str, Any], str | None]  # (field_name, value) -> error_msg or None
+Schema = dict[str, Callable[[Any], Any]]
 
-
-@dataclass
-class Schema:
-    fields: dict[str, list[FieldValidator]]  # field_name -> validators
-    required: set[str] = field(default_factory=set)
-
-
-@dataclass
-class ValidationResult:
-    valid_rows: list[dict[str, str]]
-    errors: list[dict[str, Any]]  # [{row, field, message}]
-
-
-def required(field_name: str, value: Any) -> str | None:
-    if value is None or str(value).strip() == "":
-        return f"{field_name} is required"
-    return None
-
-
-def max_length(n: int) -> FieldValidator:
-    def check(field_name: str, value: Any) -> str | None:
-        if value and len(str(value)) > n:
-            return f"{field_name} exceeds max length {n}"
-        return None
-    return check
-
-
-def is_type(typ: type) -> FieldValidator:
-    def check(field_name: str, value: Any) -> str | None:
-        try:
-            typ(value)
-            return None
-        except (ValueError, TypeError):
-            return f"{field_name} must be {typ.__name__}"
-    return check
-
-
-def read_and_validate_csv(filepath: str, schema: Schema) -> ValidationResult:
+def validate_csv(
+    filepath: str,
+    schema: Schema,
+    delimiter: str = ",",
+) -> tuple[list[dict], list[dict]]:
+    """Read CSV, validate rows against schema, return (valid_rows, errors)."""
     valid_rows = []
     errors = []
 
     with open(filepath, newline="", encoding="utf-8") as f:
-        reader = csv.DictReader(f)
+        reader = csv.DictReader(f, delimiter=delimiter)
 
         for row_num, row in enumerate(reader, start=2):  # row 1 = header
             row_errors = []
 
-            # Check for missing required fields
-            for req in schema.required:
-                if req not in row or not row[req].strip():
-                    row_errors.append({
-                        "row": row_num,
-                        "field": req,
-                        "message": f"{req} is required",
-                    })
-
-            # Run field validators
-            for field_name, validators in schema.fields.items():
-                value = row.get(field_name)
-                for validator in validators:
-                    error_msg = validator(field_name, value)
-                    if error_msg:
-                        row_errors.append({
-                            "row": row_num,
-                            "field": field_name,
-                            "message": error_msg,
-                        })
+            for field, validator in schema.items():
+                value = row.get(field)
+                try:
+                    row[field] = validator(value)
+                except (ValueError, TypeError, KeyError) as e:
+                    row_errors.append({"field": field, "value": value, "error": str(e)})
 
             if row_errors:
-                errors.extend(row_errors)
+                errors.append({"row": row_num, "data": dict(row), "errors": row_errors})
             else:
-                valid_rows.append(row)
+                valid_rows.append(dict(row))
 
-    return ValidationResult(valid_rows=valid_rows, errors=errors)
+    return valid_rows, errors
 ```
 
 Usage:
 
 ```python
-schema = Schema(
-    fields={
-        "name": [max_length(100)],
-        "age": [is_type(int)],
-        "email": [max_length(255)],
-    },
-    required={"name", "email"},
-)
+schema = {
+    "name":  lambda v: v if v and v.strip() else (_ for _ in ()).throw(ValueError("empty name")),
+    "age":   lambda v: int(v),
+    "email": lambda v: v if "@" in (v or "") else (_ for _ in ()).throw(ValueError("invalid email")),
+}
 
-result = read_and_validate_csv("data.csv", schema)
-print(f"{len(result.valid_rows)} valid, {len(result.errors)} errors")
-for e in result.errors:
-    print(f"  Row {e['row']}: {e['field']} — {e['message']}")
+valid, errs = validate_csv("data.csv", schema)
 ```
 
-Validators composable — add custom ones matching `(field_name, value) -> str | None` signature. `Schema.required` handles presence checks; `Schema.fields` dict maps columns to validator lists run in order.
+Schema = dict mapping column name → validator fn. Validator returns coerced value on success, raises on failure. Errors capture row number, raw data, and per-field details.

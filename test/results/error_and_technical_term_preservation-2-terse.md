@@ -1,18 +1,23 @@
 
 
-`==` (loose) coerces types before comparing. `===` (strict) no coercion — type + value must match.
+`==` coerces types before comparing. `===` compares value AND type, no coercion.
 
-**Coercion rules for `==`:**
-- `null == undefined` → true (only equal to each other)
-- Number vs String → string converts to number
-- Boolean vs anything → boolean converts to number first (true→1, false→0), then compare
-- Object vs primitive → object calls `valueOf()`/`toString()`
+**`===` (strict equality)**
+Same type + same value → `true`. Different types → always `false`.
 
-**Key gotchas:**
-- `"0" == false` → true (both become 0)
-- `"" == false` → true (both become 0)
-- `[] == false` → true ([] → "" → 0)
-- `null == false` → **false** (null only == undefined)
-- `NaN == NaN` → false (both == and ===)
+**`==` (loose equality)** — coercion rules:
+- `null == undefined` → `true` (and nothing else equals either)
+- String vs Number → string converts to number. `"5" == 5` → `true`
+- Boolean vs anything → boolean converts to number first (`true`→1, `false`→0), then compare again
+- Object vs primitive → object calls `valueOf()` then `toString()`
 
-**Rule of thumb:** Always use `===`. Only use `==` intentionally for `x == null` (catches both null and undefined).
+**Common gotchas:**
+```
+"" == false    // true (both coerce to 0)
+"0" == false   // true (both coerce to 0)
+"" == "0"      // false (both strings, different values)
+[] == false    // true ([].toString() → "" → 0)
+[] == ![]      // true (![] → false → 0, [] → "" → 0)
+```
+
+**Rule:** Default to `===`. Use `== null` only when you intentionally want to catch both `null` and `undefined`.

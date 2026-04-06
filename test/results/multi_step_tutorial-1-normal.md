@@ -1,10 +1,10 @@
-Here's a step-by-step guide:
+## Deploy Node.js to AWS Lambda + API Gateway
 
-## 1. Structure Your App for Lambda
+### 1. Structure your app
 
 ```js
-// handler.js
-exports.handler = async (event) => {
+// index.mjs
+export const handler = async (event) => {
   const { httpMethod, path, body, queryStringParameters } = event;
   
   return {
@@ -15,23 +15,16 @@ exports.handler = async (event) => {
 };
 ```
 
-If you have an existing Express app, wrap it with `@vendia/serverless-express`:
+Key: Lambda expects a `handler` function that receives an `event` object and returns `{ statusCode, headers, body }`.
 
-```js
-const serverlessExpress = require("@vendia/serverless-express");
-const app = require("./app"); // your Express app
-exports.handler = serverlessExpress({ app });
-```
-
-## 2. Package Your Code
+### 2. Install dependencies & zip
 
 ```bash
-mkdir deploy && cp -r *.js package.json deploy/
-cd deploy && npm install --production
-zip -r ../function.zip .
+npm install --production
+zip -r function.zip index.mjs node_modules/
 ```
 
-## 3. Create an IAM Role
+### 3. Create an IAM execution role
 
 ```bash
 aws iam create-role \
@@ -43,74 +36,62 @@ aws iam attach-role-policy \
   --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 ```
 
-## 4. Create the Lambda Function
+### 4. Create the Lambda function
 
 ```bash
 aws lambda create-function \
   --function-name my-api \
   --runtime nodejs20.x \
-  --role arn:aws:iam::<ACCOUNT_ID>:role/lambda-exec \
-  --handler handler.handler \
-  --zip-file fileb://function.zip
+  --handler index.handler \
+  --zip-file fileb://function.zip \
+  --role arn:aws:iam::<ACCOUNT_ID>:role/lambda-exec
 ```
 
-## 5. Create API Gateway (HTTP API)
+### 5. Create API Gateway (HTTP API)
 
 ```bash
-# Create the API
 aws apigatewayv2 create-api \
   --name my-api \
   --protocol-type HTTP \
   --target arn:aws:lambda:<REGION>:<ACCOUNT_ID>:function:my-api
+```
 
-# Grant API Gateway permission to invoke Lambda
+This creates the API, a default route, and a Lambda integration in one step.
+
+### 6. Grant API Gateway permission to invoke Lambda
+
+```bash
 aws lambda add-permission \
   --function-name my-api \
-  --statement-id apigateway \
+  --statement-id apigateway-invoke \
   --action lambda:InvokeFunction \
   --principal apigateway.amazonaws.com
 ```
 
-The `create-api` with `--target` auto-creates a `$default` stage, integration, and catch-all route.
-
-## 6. Deploy and Test
-
-The HTTP API auto-deploys. Your endpoint is:
-
-```
-https://<API_ID>.execute-api.<REGION>.amazonaws.com/
-```
-
-## 7. Update Code Later
+### 7. Get your endpoint
 
 ```bash
-zip -r function.zip .
+aws apigatewayv2 get-api --api-id <API_ID>
+# → ApiEndpoint: https://xxxxx.execute-api.<region>.amazonaws.com
+```
+
+Hit it: `curl https://xxxxx.execute-api.<region>.amazonaws.com/`
+
+---
+
+### Updating the function later
+
+```bash
+zip -r function.zip index.mjs node_modules/
 aws lambda update-function-code \
   --function-name my-api \
   --zip-file fileb://function.zip
 ```
 
----
+### Alternatives worth considering
 
-## Easier Alternative: Use a Framework
+- **SAM** (`sam init` / `sam deploy`) — wraps all the above into a `template.yaml` and handles packaging, roles, and API Gateway automatically. Much less manual work.
+- **SST** — higher-level framework, good DX, live Lambda dev mode.
+- **Serverless Framework** — `serverless.yml` config, `sls deploy`. Mature ecosystem.
 
-**SAM** (AWS native):
-```bash
-sam init --runtime nodejs20.x
-sam build && sam deploy --guided
-```
-
-**SST** (modern, fast iteration):
-```bash
-npx create-sst@latest my-app
-npx sst dev   # live Lambda dev
-npx sst deploy --stage prod
-```
-
-**Serverless Framework**:
-```bash
-npx serverless create --template aws-nodejs
-npx serverless deploy
-```
-
-These frameworks handle IAM, packaging, API Gateway, and CloudFormation for you — highly recommended over manual CLI steps for anything beyond a toy project.
+For anything beyond a toy project, SAM or SST will save you significant time over raw CLI commands.

@@ -1,62 +1,58 @@
-Here's how to set up a new Next.js project with TypeScript, Tailwind CSS, and ESLint:
-
-## 1. Create the project
+Run one command — it scaffolds everything:
 
 ```bash
 npx create-next-app@latest my-app
 ```
 
-The interactive prompts will ask you about each option. Select:
-
-- **TypeScript?** Yes
-- **ESLint?** Yes
-- **Tailwind CSS?** Yes
-- **`src/` directory?** Your preference (common to use `src/`)
-- **App Router?** Yes (recommended for new projects)
-- **Turbopack?** Yes (faster dev server)
-- **Import alias?** Default `@/*` is fine
-
-That's it — `create-next-app` scaffolds everything for you.
-
-## 2. What it generates
+The interactive prompts will ask:
 
 ```
-my-app/
-├── src/app/
-│   ├── layout.tsx        # Root layout
-│   ├── page.tsx          # Home page
-│   └── globals.css       # Tailwind directives
-├── public/               # Static assets
-├── tailwind.config.ts    # Tailwind configuration
-├── tsconfig.json         # TypeScript config
-├── eslint.config.mjs     # ESLint flat config
-├── next.config.ts        # Next.js config
-└── package.json
+✔ Would you like to use TypeScript? → Yes
+✔ Would you like to use ESLint? → Yes
+✔ Would you like to use Tailwind CSS? → Yes
+✔ Would you like to use `src/` directory? → Yes (recommended)
+✔ Would you like to use App Router? → Yes (recommended)
+✔ Would you like to use Turbopack for next dev? → Yes
+✔ Would you like to customize the import alias? → No (keeps @/*)
 ```
 
-## 3. Run it
+Then:
 
 ```bash
 cd my-app
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+App runs at `http://localhost:3000`.
 
-## 4. Verify each tool is working
+## What you get
 
-- **TypeScript** — rename any `.tsx` file content to have a type error; the dev server will catch it
-- **Tailwind** — add a class like `text-red-500` to any element; it should render red
-- **ESLint** — run `npm run lint` to check for issues
+- **TypeScript** — `tsconfig.json` pre-configured, `.tsx` files throughout
+- **Tailwind CSS** — `tailwind.config.ts` + `globals.css` with Tailwind directives already set up
+- **ESLint** — `.eslintrc.json` with `next/core-web-vitals` preset
+- **App Router** — file-based routing in `src/app/`
 
-## 5. Optional but recommended additions
+## Project structure
 
-```bash
-# Prettier (pairs well with ESLint)
-npm install -D prettier eslint-config-prettier
-
-# Path aliases already configured in tsconfig.json as @/*
-# Example: import { Button } from '@/components/Button'
+```
+my-app/
+├── src/
+│   └── app/
+│       ├── layout.tsx      # Root layout
+│       ├── page.tsx        # Home page
+│       └── globals.css     # Tailwind imports
+├── public/                 # Static assets
+├── tailwind.config.ts
+├── tsconfig.json
+├── next.config.ts
+├── eslint.config.mjs
+└── package.json
 ```
 
-The `create-next-app` CLI handles all the wiring — Tailwind's PostCSS plugin, TypeScript's `tsconfig.json`, ESLint's Next.js-specific rules — so you don't need to configure anything manually.
+## Optional next steps
+
+- **Add Prettier** — `npm i -D prettier eslint-config-prettier`, then add `"prettier"` to your ESLint extends
+- **Path aliases** — already configured as `@/*` mapping to `src/*`
+- **Environment variables** — create `.env.local` (auto-loaded by Next.js, git-ignored)
+
+That's it — no manual Tailwind/TypeScript/ESLint wiring needed. `create-next-app` handles all the config.

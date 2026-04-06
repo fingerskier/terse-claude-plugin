@@ -1,1 +1,1 @@
-Plan: single `Autocomplete.jsx` file with WAI-ARIA combobox pattern, keyboard nav (arrows/enter/escape/home/end), debounced fetch with `AbortController`, live region for screen readers. Zero external deps beyond React.
+

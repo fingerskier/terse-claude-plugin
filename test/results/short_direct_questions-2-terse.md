@@ -1,14 +1,11 @@
 
 
-`git rebase` replays commits from current branch onto new base. Moves/reapplies commits one-by-one on top of target branch.
+`git rebase` replays commits from current branch onto tip of another branch. Rewrites history — new commit hashes.
 
-**vs merge:** merge creates merge commit preserving both histories; rebase rewrites history into linear sequence.
+Common use: `git rebase main` — takes your feature branch commits, replays them after latest main.
 
-**Common forms:**
-- `git rebase main` — replay current branch commits onto tip of main
-- `git rebase -i HEAD~3` — interactive: reorder, squash, edit, drop last 3 commits
-- `git rebase --onto A B C` — take commits B..C, replay onto A
+vs merge: rebase = linear history, merge = preserves branch topology.
 
-**Key gotcha:** rewrites commit hashes. Never rebase commits already pushed to shared branch — other devs' history diverges.
+Interactive (`-i`): reorder, squash, edit, drop commits before replay.
 
-**Conflict flow:** rebase pauses at conflicts → fix → `git add` → `git rebase --continue` (or `--abort` to bail).
+Risk: never rebase shared/pushed commits — rewrites history others depend on.

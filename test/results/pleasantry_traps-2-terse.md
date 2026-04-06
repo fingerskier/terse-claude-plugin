@@ -1,20 +1,13 @@
 REST API = architectural style for web services over HTTP.
 
-**Core ideas:**
-- Resources identified by URLs (`/users/42`)
-- HTTP verbs = actions: `GET` read, `POST` create, `PUT` replace, `PATCH` update, `DELETE` remove
-- Stateless — each request carries all needed context (no server-side session)
-- Returns data (usually JSON), not pages
+Core constraints:
+- **Stateless** — each request carries all context needed; server stores no session
+- **Resource-based** — URLs represent nouns (`/users/42`), not actions
+- **HTTP verbs as actions** — GET (read), POST (create), PUT (replace), PATCH (update), DELETE (remove)
+- **Representations** — resources returned as JSON/XML, not raw DB rows
 
-**Example flow:**
-```
-GET    /api/users      → list users
-GET    /api/users/42   → get user 42
-POST   /api/users      → create user (body = JSON)
-PUT    /api/users/42   → replace user 42
-DELETE /api/users/42   → delete user 42
-```
+Example: `GET /api/users/42` → returns user 42's data. `DELETE /api/users/42` → removes them.
 
-**Key properties:** stateless, cacheable, uniform interface, client-server separation.
+Key properties: cacheable, layered (proxies/LBs transparent), uniform interface. Contrast w/ RPC where URLs are verbs (`/getUser`, `/deleteUser`).
 
-Contrast: GraphQL = single endpoint + query language. REST = many endpoints + HTTP verbs. REST simpler for CRUD, GraphQL better for complex/nested data fetching.
+Not a protocol — a set of conventions on top of HTTP.

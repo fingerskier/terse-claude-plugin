@@ -1,19 +1,7 @@
-Flexbox (most common):
+Shortest: `display:grid; place-items:center` on parent.
 
-```css
-display: flex; justify-content: center; align-items: center;
-```
+Flexbox: `display:flex; justify-content:center; align-items:center` on parent.
 
-Grid (shortest):
+Absolute positioning: `position:absolute; top:50%; left:50%; translate:-50% -50%` (parent needs `position:relative`).
 
-```css
-display: grid; place-items: center;
-```
-
-Absolute positioning (within positioned parent):
-
-```css
-position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-```
-
-Flex or grid on parent = centers children. Pick grid for single child, flex for multiple.
+`margin:auto` works in flex/grid containers too.

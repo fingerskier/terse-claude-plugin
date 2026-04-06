@@ -208,21 +208,25 @@ for (const [category, prompts] of categoryEntries) {
     }
   }
 
+  const failed = prompts.length - catReductions.length;
   if (catReductions.length > 0) {
     const avg = (key) => (catReductions.reduce((s, r) => s + r[key], 0) / catReductions.length).toFixed(1);
     const med = (key) => median(catReductions.map(r => r[key])).toFixed(1);
-    output.push(`  ${catLabel} (${catReductions.length}/${prompts.length} valid): avg ${avg('words')}% / median ${med('words')}% words, avg ${avg('chars')}% / median ${med('chars')}% chars, avg ${avg('lines')}% / median ${med('lines')}% lines`);
+    const failNote = failed > 0 ? `, ${failed} failed` : '';
+    output.push(`  ${catLabel} (${catReductions.length}/${prompts.length} valid${failNote}): avg ${avg('words')}% / median ${med('words')}% words, avg ${avg('chars')}% / median ${med('chars')}% chars, avg ${avg('lines')}% / median ${med('lines')}% lines`);
     output.push('');
   } else {
-    output.push(`  ${catLabel}: no valid pairs`);
+    output.push(`  ${catLabel}: no valid pairs (${failed} failed)`);
     output.push('');
   }
 }
 
 if (allReductions.length > 0) {
+  const totalFailed = totalPrompts - allReductions.length;
   const avg = (key) => (allReductions.reduce((s, r) => s + r[key], 0) / allReductions.length).toFixed(1);
   const med = (key) => median(allReductions.map(r => r[key])).toFixed(1);
-  output.push(`Overall (${allReductions.length}/${totalPrompts} valid): avg ${avg('words')}% / median ${med('words')}% words, avg ${avg('chars')}% / median ${med('chars')}% chars, avg ${avg('lines')}% / median ${med('lines')}% lines`);
+  const failNote = totalFailed > 0 ? `, ${totalFailed} failed` : '';
+  output.push(`Overall (${allReductions.length}/${totalPrompts} valid${failNote}): avg ${avg('words')}% / median ${med('words')}% words, avg ${avg('chars')}% / median ${med('chars')}% chars, avg ${avg('lines')}% / median ${med('lines')}% lines`);
 } else {
   output.push('Overall: no valid pairs to compare');
 }
