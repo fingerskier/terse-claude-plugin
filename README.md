@@ -2,7 +2,7 @@
 
 Inspired by the brilliant [Caveman Plugin](https://github.com/JuliusBrussee/caveman).
 
-A Claude Code plugin that cuts **50–70% of output tokens** by compressing prose, eliminating filler, and reducing explanatory code to minimal form — without touching deliverable code quality.
+A Claude Code plugin that cuts **30–50% of output tokens** by compressing prose, eliminating filler, and reducing explanatory code to minimal form — without touching deliverable code quality.
 
 ## What It Does
 
@@ -62,12 +62,13 @@ If you already know what `useMemo` does and just need to know *when* to reach fo
 
 | Response Type | Estimated Savings |
 |--------------|-------------------|
-| Pure explanation | 60–70% |
-| Mixed code + explanation | 40–60% |
-| Mostly deliverable code | 10–20% |
-| **Weighted average** | **50–70%** |
+| Pure explanation | 35–55% |
+| Mixed code + explanation | 25–50% |
+| Short direct questions | 40–60% |
+| Mostly deliverable code | 0–10% |
+| **Median across categories** | **~36%** |
 
-Savings vary by conversation. The claim is based on the compression techniques applied, not formal benchmarking.
+Savings vary by prompt and conversation. Numbers based on automated benchmarking of 26 prompts across 8 categories.
 
 ## Test Results
 

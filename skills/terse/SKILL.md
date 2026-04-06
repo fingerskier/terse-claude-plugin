@@ -1,6 +1,6 @@
 ---
 description: >
-  Ultra-compressed communication mode. Slash token usage ~78% by maximizing density
+  Ultra-compressed communication mode. Cut token usage ~36% by maximizing density
   while keeping full technical accuracy. Use when user says "terse mode", "start terse",
   "less tokens", "be brief", or invokes /terse. Also auto-triggers
   when token efficiency is requested.
