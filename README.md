@@ -1,8 +1,8 @@
 # Terse — Token-Efficient Communication for Claude Code
 
-Inspired by the brilliant [Caveman Plugin](https://github.com/JuliusBrussee/caveman).
+Built on the brilliant [Caveman Plugin](https://github.com/JuliusBrussee/caveman) — adopts caveman's smart-caveman voice for stickiest compression, adds a deliverable-vs-explanatory code split so production code stays untouched.
 
-A Claude Code plugin that cuts **30–50% of output tokens** by compressing prose, eliminating filler, and reducing explanatory code to minimal form — without touching deliverable code quality.
+A Claude Code plugin that compresses prose, eliminates filler, and reduces explanatory code to minimal form — without touching deliverable code quality. Pre-caveman benchmarks measured ~36% median word reduction; the caveman-voiced rewrite targets ~70%, pending re-benchmarking.
 
 ## What It Does
 
@@ -42,16 +42,16 @@ cp -r terse-claude-plugin/skills/terse ~/.claude/skills/
 Activate in any Claude Code conversation:
 
 ```
-start terse
+/terse
 ```
+
+Or say `start terse`, `terse mode`, `caveman mode`, `less tokens`, `be brief`.
 
 Deactivate:
 
 ```
 stop terse
 ```
-
-Also triggers on: `terse mode`, `less tokens`, `be brief`.
 
 ## Who Is This For?
 
